@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 namespace pg_org_defaultrole
 {
@@ -49,7 +46,7 @@ namespace pg_org_defaultrole
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
-            mb.Entity<Org>().HasOne(x => x.DefaultRole);
+            mb.Entity<Org>().HasOne(x => x.DefaultRole).WithOne().HasForeignKey<Org>(x => new { x.Id, x.DefaultRoleId });
             mb.Entity<Role>().HasKey(x => new { x.OrgId, x.Id });
             mb.Entity<Role>().HasOne(x => x.Org).WithMany(x => x.Roles).HasForeignKey(x => new { x.OrgId });
         }
