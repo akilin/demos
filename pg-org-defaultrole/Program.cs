@@ -18,6 +18,7 @@ namespace pg_org_defaultrole
             };
             ctx.Add(org);
             ctx.SaveChanges();
+            
         }
     }
 
@@ -42,7 +43,8 @@ namespace pg_org_defaultrole
         public DbSet<Role> Roles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql("Host=localhost;Database=test;Username=guest;Password=pwd");
+            => optionsBuilder.UseNpgsql("Host=localhost;Database=test;Username=guest;Password=pwd")
+            .UseSnakeCaseNamingConvention();
 
         protected override void OnModelCreating(ModelBuilder mb)
         {

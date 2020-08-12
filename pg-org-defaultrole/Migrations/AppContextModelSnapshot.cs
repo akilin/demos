@@ -21,30 +21,37 @@ namespace pg_org_defaultrole.Migrations
             modelBuilder.Entity("pg_org_defaultrole.Org", b =>
                 {
                     b.Property<int>("Id")
+                        .HasColumnName("id")
                         .HasColumnType("integer");
 
                     b.Property<int>("DefaultRoleId")
+                        .HasColumnName("default_role_id")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_orgs");
 
                     b.HasIndex("Id", "DefaultRoleId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasName("ix_orgs_id_default_role_id");
 
-                    b.ToTable("Orgs");
+                    b.ToTable("orgs");
                 });
 
             modelBuilder.Entity("pg_org_defaultrole.Role", b =>
                 {
                     b.Property<int>("OrgId")
+                        .HasColumnName("org_id")
                         .HasColumnType("integer");
 
                     b.Property<int>("Id")
+                        .HasColumnName("id")
                         .HasColumnType("integer");
 
-                    b.HasKey("OrgId", "Id");
+                    b.HasKey("OrgId", "Id")
+                        .HasName("pk_roles");
 
-                    b.ToTable("Roles");
+                    b.ToTable("roles");
                 });
 
             modelBuilder.Entity("pg_org_defaultrole.Org", b =>
@@ -52,6 +59,7 @@ namespace pg_org_defaultrole.Migrations
                     b.HasOne("pg_org_defaultrole.Role", "DefaultRole")
                         .WithOne()
                         .HasForeignKey("pg_org_defaultrole.Org", "Id", "DefaultRoleId")
+                        .HasConstraintName("fk_orgs_roles_id_default_role_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -61,6 +69,7 @@ namespace pg_org_defaultrole.Migrations
                     b.HasOne("pg_org_defaultrole.Org", "Org")
                         .WithMany("Roles")
                         .HasForeignKey("OrgId")
+                        .HasConstraintName("fk_roles_orgs_org_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
