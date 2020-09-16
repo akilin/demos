@@ -10,18 +10,21 @@ namespace pg_org_defaultrole
             using var ctx = new AppContext();
             ctx.Database.EnsureDeleted();
             ctx.Database.EnsureCreated();
+
             var role = new Role();
             var org = new Org
             {
                 Roles = new[] { role }
             };
+
             ctx.Add(org);
             ctx.SaveChanges();
+
             org.DefaultRole = role;
             ctx.SaveChanges();
+
             ctx.Remove(role);
-            ctx.SaveChanges();
-            
+            ctx.SaveChanges();            
         }
     }
 
