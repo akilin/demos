@@ -13,10 +13,13 @@ namespace pg_org_defaultrole
             var role = new Role();
             var org = new Org
             {
-                DefaultRole = role,
                 Roles = new[] { role }
             };
             ctx.Add(org);
+            ctx.SaveChanges();
+            org.DefaultRole = role;
+            ctx.SaveChanges();
+            ctx.Remove(role);
             ctx.SaveChanges();
             
         }
@@ -25,7 +28,7 @@ namespace pg_org_defaultrole
     public class Org
     {
         public int Id { get; set; }
-        public int DefaultRoleId { get; set; }
+        public int? DefaultRoleId { get; set; }
         public Role DefaultRole { get; set; }
         public ICollection<Role> Roles { get; set; }
     }
