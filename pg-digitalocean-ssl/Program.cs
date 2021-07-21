@@ -25,8 +25,7 @@ namespace pg_digitalocean_ssl
                     Password = "",
                     Port = 25060,
                     SslMode = SslMode.Require,
-                    RootCertificate = "ca-certificate.crt",
-                    TrustServerCertificate = true
+                    RootCertificate = "ca-certificate.crt"
                 }.ConnectionString);
     }
 }
