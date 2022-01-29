@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>pg_identity_always</RootNamespace>
+    <RootNamespace>pg_id_not_updated</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

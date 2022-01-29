@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 
-namespace pg_identity_always;
+namespace pg_id_not_updated;
 
 static class Program
 {
