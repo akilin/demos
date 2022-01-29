@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace pg_identity_always.Migrations
+namespace pg_id_not_updated.Migrations
 {
     public partial class Initial : Migration
     {
