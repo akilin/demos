@@ -10,7 +10,6 @@ namespace pg_multiplexing_pooling
         {
             using var ctx = new AppContext();
             ctx.Database.EnsureDeleted();
-            ctx.Database.Migrate();
         }
     }
 

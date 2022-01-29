@@ -1,0 +1,91 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using System;
+using System.Diagnostics;
+using System.Linq;
+
+namespace pg_identity_always;
+
+static class Program
+{
+    static void Main(string[] args)
+    {
+        Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+
+        using var ctx = new IdentityAlwaysContext();
+
+        ctx.Database.EnsureDeleted();
+        ctx.Database.EnsureCreated();
+        Log.Information("recreated db");
+
+        using (var tran = ctx.Database.BeginTransaction())
+        {
+            var tenant = new Tenant { Name = "testing returned ids" };
+            ctx.Tenants.Add(tenant);
+            ctx.SaveChanges();
+
+            var dbTenant = ctx.Tenants.AsNoTracking().FirstOrDefault(x => x.Name == tenant.Name);
+            if (dbTenant.Id != tenant.Id) Debugger.Break();
+
+            var defaultRole = new Role { Name = "default-role" };
+            var roles = new[] { defaultRole, new Role { Name = "some-other-role" } };
+
+            tenant.DefaultRole = defaultRole;
+            foreach (var role in roles)
+            {
+                role.TenantId = tenant.Id;
+            }
+            ctx.Roles.AddRange(roles);
+            ctx.SaveChanges();
+
+            tran.Commit();
+        }
+    }
+
+}
+
+public class Tenant
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int? DefaultRoleId { get; set; }
+    public Role DefaultRole { get; set; }
+}
+
+public class Role
+{
+    public int TenantId { get; set; }
+    public Tenant Tenant { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+
+public class IdentityAlwaysContext : DbContext
+{
+    public DbSet<Tenant> Tenants { get; set; }
+    public DbSet<Role> Roles { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder
+        .UseNpgsql("Host=localhost;Database=identity-always;Username=guest;Password=pwd")
+        .UseSnakeCaseNamingConvention()
+        .UseLoggerFactory(new LoggerFactory().AddSerilog(Log.Logger));
+
+    protected override void OnModelCreating(ModelBuilder mb)
+    {
+        mb.UseIdentityAlwaysColumns();
+
+        mb.Entity<Tenant>().HasKey(x => x.Id);
+        mb.Entity<Tenant>().Property(x => x.Id).UseIdentityAlwaysColumn()
+            .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Throw);
+
+        mb.Entity<Tenant>().HasOne(x => x.DefaultRole)
+            .WithOne()
+            .HasForeignKey<Tenant>(x => new { x.Id, x.DefaultRoleId });
+
+
+        mb.Entity<Role>().HasKey(x => new { x.TenantId, x.Id });
+        mb.Entity<Role>().HasOne(x => x.Tenant).WithMany().HasForeignKey(x => new { x.TenantId });
+    }
+}
