@@ -65,6 +65,7 @@ public class TestContext : DbContext
 
         mb.Entity<Tenant>().HasKey(x => x.Id);
         mb.Entity<Tenant>().Property(x => x.Id).UseIdentityAlwaysColumn()
+            //.ValueGeneratedOnAdd() < -- uncommenting this line seems to fix the issue.
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Throw);
 
         mb.Entity<Tenant>().HasOne(x => x.DefaultRole)
