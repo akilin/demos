@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using pg_identity_always;
 
 #nullable disable
 
@@ -21,7 +22,7 @@ namespace pg_identity_always.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityAlwaysColumns(modelBuilder);
 
-            modelBuilder.Entity("pg_org_defaultrole.Role", b =>
+            modelBuilder.Entity("pg_identity_always.Role", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -41,7 +42,7 @@ namespace pg_identity_always.Migrations
                     b.ToTable("roles", (string)null);
                 });
 
-            modelBuilder.Entity("pg_org_defaultrole.Tenant", b =>
+            modelBuilder.Entity("pg_identity_always.Tenant", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("integer")
@@ -67,9 +68,9 @@ namespace pg_identity_always.Migrations
                     b.ToTable("tenants", (string)null);
                 });
 
-            modelBuilder.Entity("pg_org_defaultrole.Role", b =>
+            modelBuilder.Entity("pg_identity_always.Role", b =>
                 {
-                    b.HasOne("pg_org_defaultrole.Tenant", "Tenant")
+                    b.HasOne("pg_identity_always.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -79,11 +80,11 @@ namespace pg_identity_always.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("pg_org_defaultrole.Tenant", b =>
+            modelBuilder.Entity("pg_identity_always.Tenant", b =>
                 {
-                    b.HasOne("pg_org_defaultrole.Role", "DefaultRole")
+                    b.HasOne("pg_identity_always.Role", "DefaultRole")
                         .WithOne()
-                        .HasForeignKey("pg_org_defaultrole.Tenant", "Id", "DefaultRoleId")
+                        .HasForeignKey("pg_identity_always.Tenant", "Id", "DefaultRoleId")
                         .HasConstraintName("fk_tenants_roles_id_default_role_id");
 
                     b.Navigation("DefaultRole");

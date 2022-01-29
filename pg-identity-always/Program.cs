@@ -18,30 +18,14 @@ static class Program
 
         ctx.Database.EnsureDeleted();
         ctx.Database.EnsureCreated();
-        Log.Information("recreated db");
 
-        using (var tran = ctx.Database.BeginTransaction())
-        {
-            var tenant = new Tenant { Name = "testing returned ids" };
-            ctx.Tenants.Add(tenant);
-            ctx.SaveChanges();
+        var tenant = new Tenant { Name = "testing returned ids" };
+        ctx.Tenants.Add(tenant);
+        ctx.SaveChanges();
 
-            var dbTenant = ctx.Tenants.AsNoTracking().FirstOrDefault(x => x.Name == tenant.Name);
-            if (dbTenant.Id != tenant.Id) Debugger.Break();
-
-            var defaultRole = new Role { Name = "default-role" };
-            var roles = new[] { defaultRole, new Role { Name = "some-other-role" } };
-
-            tenant.DefaultRole = defaultRole;
-            foreach (var role in roles)
-            {
-                role.TenantId = tenant.Id;
-            }
-            ctx.Roles.AddRange(roles);
-            ctx.SaveChanges();
-
-            tran.Commit();
-        }
+        //this section is just to demonstrate that id in db is different.
+        var dbTenant = ctx.Tenants.AsNoTracking().FirstOrDefault(x => x.Name == tenant.Name);
+        if (dbTenant.Id != tenant.Id) throw new Exception("Id was not updated");
     }
 
 }
