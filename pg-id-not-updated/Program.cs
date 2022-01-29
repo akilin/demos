@@ -25,7 +25,11 @@ static class Program
 
         //this section is just to demonstrate that id in db is different.
         var dbTenant = ctx.Tenants.AsNoTracking().FirstOrDefault(x => x.Name == tenant.Name);
-        if (dbTenant.Id != tenant.Id) throw new Exception("Id was not updated");
+        if (dbTenant.Id != tenant.Id)
+        {
+            var errMsg = $"Id was not updated. InMemory id is {tenant.Id}, while db id is {dbTenant.Id}";
+            throw new Exception(errMsg);
+        }
     }
 
 }
