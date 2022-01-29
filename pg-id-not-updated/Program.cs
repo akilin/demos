@@ -14,7 +14,7 @@ static class Program
     {
         Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 
-        using var ctx = new IdentityAlwaysContext();
+        using var ctx = new TestContext();
 
         ctx.Database.EnsureDeleted();
         ctx.Database.EnsureCreated();
@@ -46,13 +46,13 @@ public class Role
     public string Name { get; set; }
 }
 
-public class IdentityAlwaysContext : DbContext
+public class TestContext : DbContext
 {
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<Role> Roles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder
-        .UseNpgsql("Host=localhost;Database=identity-always;Username=guest;Password=pwd")
+        .UseNpgsql("Host=localhost;Database=test;Username=guest;Password=pwd")
         .UseSnakeCaseNamingConvention()
         .UseLoggerFactory(new LoggerFactory().AddSerilog(Log.Logger));
 

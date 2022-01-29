@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using pg_id_not_updated;
@@ -11,11 +10,10 @@ using pg_id_not_updated;
 
 namespace pg_id_not_updated.Migrations
 {
-    [DbContext(typeof(IdentityAlwaysContext))]
-    [Migration("20220129084932_Initial")]
-    partial class Initial
+    [DbContext(typeof(TestContext))]
+    partial class TestContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
