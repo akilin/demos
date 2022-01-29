@@ -27,8 +27,7 @@ static class Program
         var dbTenant = ctx.Tenants.AsNoTracking().FirstOrDefault(x => x.Name == tenant.Name);
         if (dbTenant.Id != tenant.Id)
         {
-            var errMsg = $"Id was not updated. InMemory id is {tenant.Id}, while db id is {dbTenant.Id}";
-            throw new Exception(errMsg);
+            Log.Error("Id was not updated. InMemory id is {appId}, while db id is {dbId}", tenant.Id, dbTenant.Id);
         }
     }
 
