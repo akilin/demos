@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
-using System.Diagnostics;
 using System.Linq;
 
 namespace pg_id_not_updated;
@@ -55,16 +53,16 @@ public class TestContext : DbContext
     public DbSet<Role> Roles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder
-        .UseNpgsql("Host=localhost;Database=test;Username=guest;Password=pwd")
+        .UseSqlServer(@"Server=localhost;Database=test;User=sa;Password=Your_password123;")
         .UseSnakeCaseNamingConvention()
         .UseLoggerFactory(new LoggerFactory().AddSerilog(Log.Logger));
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
-        mb.UseIdentityAlwaysColumns();
+        mb.UseIdentityColumns();
 
         mb.Entity<Tenant>().HasKey(x => x.Id);
-        mb.Entity<Tenant>().Property(x => x.Id).UseIdentityAlwaysColumn()
+        mb.Entity<Tenant>().Property(x => x.Id).UseIdentityColumn()
             //.ValueGeneratedOnAdd() < -- uncommenting this line seems to fix the issue.
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Throw);
 
