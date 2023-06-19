@@ -13,6 +13,8 @@ namespace pg_explicit_preparation_with_autoprepare
     static class Program
     {
 
+        public static string ConnectionString = "Host=localhost;Database=test;Username=guest;Password=pwd";
+
         static void Main()
         {
             var sql = @"select count(*) from table_1
@@ -47,6 +49,7 @@ join table_29 using (tenant_id, id)
 join table_30 using (tenant_id, id)
 ";
 
+            //commenting out this line fixes execution times of requests #1-#5, but not request #9
             sql += "where tenant_id = @tenantId and id = @id";
 
             using var ctx = new AppContext();
@@ -56,11 +59,11 @@ join table_30 using (tenant_id, id)
 
             var sw = new Stopwatch();
 
-            for (int i = 0; i < 20; i++)
-            {
-                var con = ctx.Database.GetDbConnection() as NpgsqlConnection;
-                if (con.State is not ConnectionState.Open) con.Open();
+            var con = new NpgsqlConnection(ConnectionString);
+            con.Open();
 
+            for (int i = 0; i < 15; i++)
+            {
                 sw.Restart();
 
                 using var cmd = new NpgsqlCommand(sql, con);
@@ -74,7 +77,7 @@ join table_30 using (tenant_id, id)
 
                 cmd.ExecuteScalar();
 
-                Console.WriteLine(i + "\t" + con.ProcessID + "\t" + sw.Elapsed);
+                Console.WriteLine(i + "\t" + sw.Elapsed);
             }
         }
     }
@@ -152,7 +155,7 @@ join table_30 using (tenant_id, id)
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Database=test;Username=guest;Password=pwd").UseSnakeCaseNamingConvention();
+            optionsBuilder.UseNpgsql(Program.ConnectionString).UseSnakeCaseNamingConvention();
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
