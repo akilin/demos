@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace pg_explicit_preparation_with_autoprepare.Migrations
+namespace pg_explicit_preparation.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

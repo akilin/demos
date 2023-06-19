@@ -12,11 +12,10 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Microsoft.Extensions.Configuration;
 
-namespace pg_explicit_preparation_with_autoprepare
+namespace pg_explicit_preparation
 {
     static class Program
     {
-
         public static string ConnectionString = "Host=localhost;Database=test;Username=guest;Password=pwd";
 
         static void Main()
@@ -53,7 +52,8 @@ join table_29 using (tenant_id, id)
 join table_30 using (tenant_id, id)
 ";
 
-            //commenting out this line fixes the issue
+            //commenting out this line fixes the issue of slow subsequent queries (they all finish in 1-2ms)
+            //but makes first query take almost 300ms (~x5 slower compared to first request with this line uncommented)
             sql += "where tenant_id = @tenantId and id = @id";
 
             using var ctx = new AppContext();
@@ -62,7 +62,7 @@ join table_30 using (tenant_id, id)
             ctx.Database.EnsureCreated();
 
             using var tracerProvider = Sdk.CreateTracerProviderBuilder()
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("npgsql-test"))
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("pg_explicit_preparation"))
                 .AddNpgsql()
                 .AddSource(nameof(Program))
                 .AddJaegerExporter()

@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net7.0</TargetFramework>
-		<RootNamespace>pg_explicit_preparation_with_autoprepare</RootNamespace>
+		<RootNamespace>pg_explicit_preparation</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>

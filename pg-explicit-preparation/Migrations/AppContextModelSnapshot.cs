@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using pg_explicit_preparation_with_autoprepare;
+using pg_explicit_preparation;
 
 #nullable disable
 
-namespace pg_explicit_preparation_with_autoprepare.Migrations
+namespace pg_explicit_preparation.Migrations
 {
     [DbContext(typeof(AppContext))]
     partial class AppContextModelSnapshot : ModelSnapshot
@@ -21,7 +21,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table1", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table1", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -41,7 +41,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_1", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table10", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table10", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -61,7 +61,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_10", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table11", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table11", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -81,7 +81,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_11", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table12", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table12", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -101,7 +101,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_12", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table13", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table13", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -121,7 +121,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_13", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table14", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table14", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -141,7 +141,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_14", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table15", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table15", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -161,7 +161,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_15", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table16", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table16", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -181,7 +181,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_16", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table17", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table17", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -201,7 +201,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_17", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table2", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table2", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -221,7 +221,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_2", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table3", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table3", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -241,7 +241,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_3", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table4", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table4", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -261,7 +261,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_4", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table5", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table5", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -281,7 +281,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_5", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table6", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table6", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -301,7 +301,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_6", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table7", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table7", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -321,7 +321,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_7", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table8", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table8", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
@@ -341,7 +341,7 @@ namespace pg_explicit_preparation_with_autoprepare.Migrations
                     b.ToTable("table_8", (string)null);
                 });
 
-            modelBuilder.Entity("pg_explicit_preparation_with_autoprepare.Table9", b =>
+            modelBuilder.Entity("pg_explicit_preparation.Table9", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
