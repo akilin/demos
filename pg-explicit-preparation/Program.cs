@@ -1,16 +1,12 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NpgsqlTypes;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
 using System.Diagnostics;
 using Npgsql;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Microsoft.Extensions.Configuration;
 
 namespace pg_explicit_preparation
 {
