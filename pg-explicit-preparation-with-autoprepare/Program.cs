@@ -7,6 +7,10 @@ using System.Diagnostics;
 using Npgsql;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenTelemetry;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Microsoft.Extensions.Configuration;
 
 namespace pg_explicit_preparation_with_autoprepare
 {
@@ -49,7 +53,7 @@ join table_29 using (tenant_id, id)
 join table_30 using (tenant_id, id)
 ";
 
-            //commenting out this line fixes execution times of requests #1-#5, but not request #9
+            //commenting out this line fixes the issue
             sql += "where tenant_id = @tenantId and id = @id";
 
             using var ctx = new AppContext();
@@ -57,27 +61,31 @@ join table_30 using (tenant_id, id)
             ctx.Database.EnsureDeleted();
             ctx.Database.EnsureCreated();
 
-            var sw = new Stopwatch();
+            using var tracerProvider = Sdk.CreateTracerProviderBuilder()
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("npgsql-test"))
+                .AddNpgsql()
+                .AddSource(nameof(Program))
+                .AddJaegerExporter()
+                .Build();
 
-            var con = new NpgsqlConnection(ConnectionString);
+            using var con = new NpgsqlConnection(ConnectionString);
             con.Open();
 
-            for (int i = 0; i < 15; i++)
+            using (new ActivitySource(nameof(Program)).StartActivity(nameof(Program)))
             {
-                sw.Restart();
+                for (int i = 0; i < 15; i++)
+                {
+                    using var cmd = new NpgsqlCommand(sql, con);
+                    cmd.Parameters.Add("tenantId", NpgsqlDbType.Integer);
+                    cmd.Parameters.Add("id", NpgsqlDbType.Integer);
 
-                using var cmd = new NpgsqlCommand(sql, con);
-                cmd.Parameters.Add("tenantId", NpgsqlDbType.Integer);
-                cmd.Parameters.Add("id", NpgsqlDbType.Integer);
+                    cmd.Prepare();
 
-                cmd.Prepare();
+                    cmd.Parameters["tenantId"].Value = i;
+                    cmd.Parameters["id"].Value = i;
 
-                cmd.Parameters["tenantId"].Value = i;
-                cmd.Parameters["id"].Value = i;
-
-                cmd.ExecuteScalar();
-
-                Console.WriteLine(i + "\t" + sw.Elapsed);
+                    cmd.ExecuteScalar();
+                }
             }
         }
     }
