@@ -13,9 +13,10 @@ Log.Logger = new LoggerConfiguration()
 
 var filter = "@Level = 'Error'";
 
+var connection = new SeqConnection(seqUrl);
+
 while (true)
 {
-    var connection = new SeqConnection(seqUrl);
     await connection.EnsureConnectedAsync(TimeSpan.FromSeconds(15));
     
     var stream = await connection.Events.StreamAsync<JObject>(filter: filter);
@@ -36,7 +37,6 @@ while (true)
 
     subscription.Dispose();
     stream.Dispose();
-    connection.Dispose();
 
     Log.Information("loop end");
 }
