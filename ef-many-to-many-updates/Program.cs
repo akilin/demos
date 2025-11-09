@@ -11,57 +11,37 @@ namespace pg_related_entities
     {
         static void Main(string[] args)
         {
+            // reset db
             using var ctx = new AppContext();
             ctx.Database.EnsureDeleted();
             ctx.Database.EnsureCreated();
 
-            var group = new Group() { OrgId = 1 };
-
-            ctx.Orgs.Add(new Org());
+            // seed data
+            ctx.Groups.Add(new Group());
+            ctx.Users.Add(new User());
             ctx.SaveChanges();
-            ctx.Groups.Add(new Group() { OrgId = 1 });
-            ctx.Users.AddRange(new User() { OrgId = 1 }, new User() { OrgId = 1 });
-            ctx.SaveChanges();
-            ctx.GroupMembers.AddRange(
-                new GroupMember { OrgId = 1, UserId = 1, GroupId = 1 },
-                new GroupMember { OrgId = 1, UserId = 2, GroupId = 1 }
-            );
+            ctx.GroupMembers.Add(new GroupMember { UserId = 1, GroupId = 1 });
             ctx.SaveChanges();
 
             ctx.ChangeTracker.Clear();
 
-            group = ctx.Groups.Include(x => x.Members).Single();
-            group.Members =
-            [
-                new() { OrgId = 1, UserId = 1, GroupId = 1 },
-                new() { OrgId = 1, UserId = 2, GroupId = 1 },
-            ];
+            // act
+            var group = ctx.Groups.Include(x => x.Members).Single();
+            //either of the 2 lines below work fine on their own. but combined - they cause the issue
+            group.Members = [new() { UserId = 1, GroupId = 1 }];
             group.GroupOwnerId = 1;
             ctx.SaveChanges();
-
-            Console.WriteLine(group.Members.Count);
-
         }
-    }
-
-    public class Org
-    {
-        public int Id { get; set; }
     }
 
     public class User
     {
-        public int OrgId { get; set; }
-        public Org Org { get; set; } = null!;
-
         public int Id { get; set; }
         public ICollection<GroupMember> Groups { get; set; } = null!;
     }
 
     public class Group
     {
-        public int OrgId { get; set; }
-        public Org Org { get; set; } = null!;
         public int Id { get; set; }
         public int? GroupOwnerId { get; set; }
         public GroupMember? GroupOwner { get; set; }
@@ -70,9 +50,6 @@ namespace pg_related_entities
 
     public class GroupMember
     {
-        public int OrgId { get; set; }
-        public Org Org { get; set; } = null!;
-
         public int GroupId { get; set; }
         public Group Group { get; set; } = null!;
 
@@ -82,7 +59,6 @@ namespace pg_related_entities
 
     public class AppContext : DbContext
     {
-        public DbSet<Org> Orgs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
@@ -96,13 +72,13 @@ namespace pg_related_entities
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
-            mb.Entity<User>().HasKey(x => new { x.OrgId, x.Id });
+            mb.Entity<User>().HasKey(x => new { x.Id });
             var userId = mb.Entity<User>().Property(x => x.Id);
             userId.UseIdentityAlwaysColumn();
             userId.Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Throw);
             userId.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Throw);
 
-            mb.Entity<Group>().HasKey(x => new { x.OrgId, x.Id });
+            mb.Entity<Group>().HasKey(x => new { x.Id });
             var groupId = mb.Entity<Group>().Property(x => x.Id);
             groupId.UseIdentityAlwaysColumn();
             groupId.Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Throw);
@@ -111,21 +87,21 @@ namespace pg_related_entities
             mb.Entity<Group>()
                 .HasOne(x => x.GroupOwner)
                 .WithMany()
-                .HasForeignKey(x => new { x.OrgId, x.Id, x.GroupOwnerId })
+                .HasForeignKey(x => new { x.Id, x.GroupOwnerId })
                 .OnDelete(DeleteBehavior.Restrict);
 
-            mb.Entity<GroupMember>().HasKey(x => new { x.OrgId, x.GroupId, x.UserId });
+            mb.Entity<GroupMember>().HasKey(x => new { x.GroupId, x.UserId });
 
             mb.Entity<GroupMember>()
                 .HasOne(x => x.User)
                 .WithMany(x => x.Groups)
-                .HasForeignKey(x => new { x.OrgId, x.UserId })
+                .HasForeignKey(x => new { x.UserId })
                 .OnDelete(DeleteBehavior.Cascade);
 
             mb.Entity<GroupMember>()
                 .HasOne(x => x.Group)
                 .WithMany(x => x.Members)
-                .HasForeignKey(x => new { x.OrgId, x.GroupId })
+                .HasForeignKey(x => new { x.GroupId })
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
