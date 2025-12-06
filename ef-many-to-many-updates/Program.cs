@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace pg_related_entities
+namespace ef_many_to_many_updates
 {
     static class Program
     {
@@ -67,8 +67,7 @@ namespace pg_related_entities
             => optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information)
             .EnableSensitiveDataLogging()
             .EnableDetailedErrors()
-            .UseNpgsql("Host=localhost;Database=test;Username=guest;Password=pwd")
-            .UseSnakeCaseNamingConvention();
+            .UseNpgsql("Host=localhost;Database=test;Username=guest;Password=pwd");
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
