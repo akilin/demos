@@ -16,10 +16,9 @@ namespace ef_many_to_many_updates
             ctx.Database.EnsureDeleted();
             ctx.Database.EnsureCreated();
 
-            // seed data
-            ctx.Groups.Add(new Group());
-            ctx.Users.Add(new User());
-            ctx.SaveChanges();
+            // arrange
+            ctx.Groups.Add(new Group { Id = 1 });
+            ctx.Users.Add(new User { Id = 1 });
             ctx.GroupMembers.Add(new GroupMember { UserId = 1, GroupId = 1 });
             ctx.SaveChanges();
 
@@ -71,37 +70,22 @@ namespace ef_many_to_many_updates
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
-            mb.Entity<User>().HasKey(x => new { x.Id });
-            var userId = mb.Entity<User>().Property(x => x.Id);
-            userId.UseIdentityAlwaysColumn();
-            userId.Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Throw);
-            userId.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Throw);
-
-            mb.Entity<Group>().HasKey(x => new { x.Id });
-            var groupId = mb.Entity<Group>().Property(x => x.Id);
-            groupId.UseIdentityAlwaysColumn();
-            groupId.Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Throw);
-            groupId.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Throw);
-
             mb.Entity<Group>()
                 .HasOne(x => x.GroupOwner)
                 .WithMany()
-                .HasForeignKey(x => new { x.Id, x.GroupOwnerId })
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(x => new { x.Id, x.GroupOwnerId });
 
             mb.Entity<GroupMember>().HasKey(x => new { x.GroupId, x.UserId });
 
             mb.Entity<GroupMember>()
                 .HasOne(x => x.User)
                 .WithMany(x => x.Groups)
-                .HasForeignKey(x => new { x.UserId })
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(x => new { x.UserId });
 
             mb.Entity<GroupMember>()
                 .HasOne(x => x.Group)
                 .WithMany(x => x.Members)
-                .HasForeignKey(x => new { x.GroupId })
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(x => new { x.GroupId });
         }
     }
 }
