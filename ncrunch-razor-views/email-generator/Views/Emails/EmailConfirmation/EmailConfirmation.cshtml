@@ -1,0 +1,16 @@
+@using MailRenderer.Views.Emails.EmailConfirmation
+
+@model EmailConfirmationViewModel;
+
+@{
+    if (Model is null) throw new ArgumentNullException(nameof(Model));
+    ViewData["EmailTitle"] = "SomeString";
+}
+
+<tr>
+    <td>
+        <p>Please verify your account to complete the sign-up process. Just click on the verification link below.</p>
+        <a href="@Model.VerificationUrl">Verify email</a>
+    </td>
+</tr>
+
